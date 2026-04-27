@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tokens.h"
 #include "scanner.h"
 
 int main(int argc, char* argv[]) {
@@ -22,12 +21,11 @@ int main(int argc, char* argv[]) {
     char* buffer = (char*)malloc(fileSize + 1);
     fread(buffer, sizeof(char), fileSize, file);
     buffer[fileSize] = '\0';
+    fclose(file);
 
     initScanner(buffer);
+    printf("Scanner initialized. Ready for Day 5.\n");
 
-    printf("Source Code:\n%s\n", buffer);
-
-    fclose(file);
     free(buffer);
     return 0;
 }
