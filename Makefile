@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Iinclude -Wall -Wextra
 
-SRCS = src/main.c src/scanner.c
+SRCS = src/main.c src/scanner.c src/ast.c
 OBJS = $(SRCS:.c=.o)
 TARGET = minicc
 
