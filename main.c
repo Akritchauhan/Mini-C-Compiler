@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tokens.h"
+#include "scanner.h"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -21,6 +22,8 @@ int main(int argc, char* argv[]) {
     char* buffer = (char*)malloc(fileSize + 1);
     fread(buffer, sizeof(char), fileSize, file);
     buffer[fileSize] = '\0';
+
+    initScanner(buffer);
 
     printf("Source Code:\n%s\n", buffer);
 
