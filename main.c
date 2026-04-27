@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "tokens.h"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -13,7 +14,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Seek to end to find file size
     fseek(file, 0L, SEEK_END);
     size_t fileSize = ftell(file);
     rewind(file);
