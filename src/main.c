@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "scanner.h"
+#include "tokens.h"
 
 void printToken(Token token) {
     const char* typeNames[] = {

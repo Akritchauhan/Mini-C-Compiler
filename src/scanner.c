@@ -1,6 +1,7 @@
 #include <string.h>
 #include "scanner.h"
 #include <ctype.h>
+#include "tokens.h"
 
 extern Scanner scanner;
 
