@@ -4,28 +4,33 @@
 
 extern Scanner scanner;
 
-// Helper to check for digits
+
 static int isDigit(char c) {
     return c >= '0' && c <= '9';
 }
 
-// Helper to check if at end of input
+static int isAlpha(char c) {
+    return (c >= 'a' && c <= 'z') ||
+           (c >= 'A' && c <= 'Z') ||
+            c == '_';
+}
+
+
 static int isAtEnd() {
     return *scanner.current == '\0';
 }
 
-// Helper to peek at current character without advancing
 static char peek() {
     return *scanner.current;
 }
 
-// Helper to advance and return current character
+
 static char advance() {
     scanner.current++;
     return scanner.current[-1];
 }
 
-// Helper to skip whitespace characters
+
 static void skipWhitespace() {
     while (*scanner.current == ' ' || *scanner.current == '\t' || *scanner.current == '\n') {
         if (*scanner.current == '\n') scanner.line++;
@@ -33,7 +38,7 @@ static void skipWhitespace() {
     }
 }
 
-// Helper to package a token
+
 static Token makeToken(TokenType type) {
     Token token;
     token.type = type;
@@ -43,7 +48,7 @@ static Token makeToken(TokenType type) {
     return token;
 }
 
-// Helper for error tokens
+
 static Token errorToken(const char* message) {
     Token token;
     token.type = TOKEN_ERROR;
@@ -53,10 +58,32 @@ static Token errorToken(const char* message) {
     return token;
 }
 
-// Consumes all consecutive digits
+
 static Token number() {
     while (isDigit(peek())) advance();
     return makeToken(TOKEN_NUMBER);
+}
+
+
+static TokenType identifierType() {
+    int length = (int)(scanner.current - scanner.start);
+    
+    // Simple check for "print" keyword
+    if (length == 5 && memcmp(scanner.start, "print", 5) == 0) {
+        return TOKEN_PRINT;
+    }
+    // Simple check for "int" keyword
+    if (length == 3 && memcmp(scanner.start, "int", 3) == 0) {
+        return TOKEN_INT;
+    }
+
+    return TOKEN_IDENTIFIER;
+}
+
+// Scan identifier or keyword
+static Token identifier() {
+    while (isAlpha(peek()) || isDigit(peek())) advance();
+    return makeToken(identifierType());
 }
 
 Token scanToken() {
@@ -66,6 +93,9 @@ Token scanToken() {
     if (isAtEnd()) return makeToken(TOKEN_EOF);
 
     char c = advance();
+
+    // Check for identifiers/keywords
+    if (isAlpha(c)) return identifier();
 
     // Check for numbers
     if (isDigit(c)) return number();
