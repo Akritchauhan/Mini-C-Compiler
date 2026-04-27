@@ -1,56 +1,46 @@
-#include <stdio.h>
+#include <string.h>
 #include "scanner.h"
 
-Scanner scanner;
+extern Scanner scanner;
 
-void initScanner(const char* source) {
-    scanner.start = source;
-    scanner.current = source;
-    scanner.line = 1;
+// Helper to package a token
+static Token makeToken(TokenType type) {
+    Token token;
+    token.type = type;
+    token.start = scanner.start;
+    token.length = (int)(scanner.current - scanner.start);
+    token.line = scanner.line;
+    return token;
 }
 
-static int isAtEnd() {
-    return *scanner.current == '\0';
+// Helper for error tokens
+static Token errorToken(const char* message) {
+    Token token;
+    token.type = TOKEN_ERROR;
+    token.start = message;
+    token.length = (int)strlen(message);
+    token.line = scanner.line;
+    return token;
 }
 
-static char advance() {
-    scanner.current++;
-    return scanner.current[-1];
-}
-
-static char peek() {
-    return *scanner.current;
-}
-
-static void skipWhitespace() {
-    for (;;) {
-        char c = peek();
-        switch (c) {
-            case ' ':
-            case '\r':
-            case '\t':
-                advance();
-                break;
-            case '\n':
-                scanner.line++;
-                advance();
-                break;
-            default:
-                return;
-        }
-    }
-}
-
-// Basic scanToken to satisfy the compiler for now
 Token scanToken() {
     skipWhitespace();
     scanner.start = scanner.current;
 
-    if (isAtEnd()) {
-        Token token = {TOKEN_EOF, scanner.current, 0, scanner.line};
-        return token;
+    if (isAtEnd()) return makeToken(TOKEN_EOF);
+
+    char c = advance();
+
+    switch (c) {
+        case '+': return makeToken(TOKEN_PLUS);
+        case '-': return makeToken(TOKEN_MINUS);
+        case '*': return makeToken(TOKEN_STAR);
+        case '/': return makeToken(TOKEN_SLASH);
+        case '=': return makeToken(TOKEN_EQUAL);
+        case ';': return makeToken(TOKEN_SEMICOLON);
+        case '(': return makeToken(TOKEN_LPAREN);
+        case ')': return makeToken(TOKEN_RPAREN);
     }
 
-    // Day 5 will fill this switch case
-    return (Token){TOKEN_ERROR, scanner.current, 0, scanner.line};
+    return errorToken("Unexpected character.");
 }

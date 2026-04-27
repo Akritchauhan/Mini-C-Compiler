@@ -24,7 +24,13 @@ int main(int argc, char* argv[]) {
     fclose(file);
 
     initScanner(buffer);
-    printf("Scanner initialized. Ready for Day 5.\n");
+    printf("Scanner initialized.\n");
+    // Inside main(), after initScanner(buffer):
+Token token;
+do {
+    token = scanToken();
+    printf("Token Type: %d, Line: %d\n", token.type, token.line);
+} while (token.type != TOKEN_EOF);
 
     free(buffer);
     return 0;
