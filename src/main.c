@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "scanner.h"
+#include "parser.h"
+#include "ast.h"
 
 static void run(const char* source) {
     initScanner(source);
-    for (;;) {
-        Token token = scanToken();
-        // Print token info
-        printf("%02d | Type: %2d | '%.*s'\n", 
-               token.line, token.type, token.length, token.start);
-        
-        if (token.type == TOKEN_EOF) break;
+    ASTNode* root = parse();
+    
+    if (root != NULL) {
+        printf("Parsed successfully: %.*s\n", root->token.length, root->token.start);
     }
 }
 
